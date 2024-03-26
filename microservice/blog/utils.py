@@ -87,6 +87,11 @@ class ApiResponse:
     FILE_DELETE_ERROR       = {"Error": "An error occured while trying to delete the file."}
     READER_POST_ERROR       = {"Erroe": "An error occured while trying to add the reader id."}
 
+    @staticmethod
+    def key_error(e: KeyError) -> dict:
+        return {"Error": f"Missing key: {e}"}
+
+
 def delete_file_placeholder(blog: str, uid: str) -> str:
     """
     Deletes the file placeholder of a deleted file in a blog.

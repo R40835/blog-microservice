@@ -56,7 +56,10 @@ def archived_magazine(request: Request) -> Response:
         Response: JSON object containing count, blogs, and next url.
     """
     if request.method == 'GET':
-        magazine_id = request.data['magazine'] 
+        try:
+            magazine_id = request.data['magazine'] 
+        except KeyError as e:
+            return Response(ApiResponse.key_error(e), status=status.HTTP_400_BAD_REQUEST)
         paginator = PageNumberPagination()
         paginator.page_size = 10
         blogs = Blog.objects.defer(
@@ -87,7 +90,10 @@ def user_blogs(request: Request) -> Response:
         Response: JSON object containing count, blogs, and next url.
     """
     if request.method == 'GET':
-        author_id = request.data['author']
+        try:
+            author_id = request.data['author']
+        except KeyError as e:
+            return Response(ApiResponse.key_error(e), status=status.HTTP_400_BAD_REQUEST)
         paginator = PageNumberPagination()
         paginator.page_size = 10
         blogs = Blog.objects.defer(
@@ -118,7 +124,10 @@ def user_rejected_blogs(request: Request) -> Response:
         Response: JSON object containing count, blogs, and next url.
     """
     if request.method == 'GET':
-        user_id = request.data['user']
+        try:
+            user_id = request.data['user']
+        except KeyError as e:
+            return Response(ApiResponse.key_error(e), status=status.HTTP_400_BAD_REQUEST)
         paginator = PageNumberPagination()
         paginator.page_size = 10
         blogs = Blog.objects.defer(
@@ -150,7 +159,10 @@ def user_drafts(request: Request) -> Response:
         Response: JSON object containing count, blogs, and next url.
     """
     if request.method == 'GET':
-        user_id = request.data['user']
+        try:
+            user_id = request.data['user']
+        except KeyError as e:
+            return Response(ApiResponse.key_error(e), status=status.HTTP_400_BAD_REQUEST)
         paginator = PageNumberPagination()
         paginator.page_size = 10
         drafts = Blog.objects.defer(
@@ -182,8 +194,11 @@ def read_blog(request: Request) -> Response:
         Response: JSON object containing all the blog's fields.
     """
     if request.method == 'GET':
-        user_id = request.data['user']
-        blog_id = request.data['blog']
+        try:
+            user_id = request.data['user']
+            blog_id = request.data['blog']
+        except KeyError as e:
+            return Response(ApiResponse.key_error(e), status=status.HTTP_400_BAD_REQUEST)
         try:
             blog = Blog.objects.defer(
                 'is_ready',
@@ -224,8 +239,11 @@ def new_reader(request: Request) -> Response:
         Response: A response object indicating the status of the operation.
     """
     if request.method == 'POST':
-        blog_id = request.data['blog']
-        user_id = request.data['user']
+        try:
+            blog_id = request.data['blog']
+            user_id = request.data['user']
+        except KeyError as e:
+            return Response(ApiResponse.key_error(e), status=status.HTTP_400_BAD_REQUEST)
         try: 
             blog = Blog.objects.get(pk=blog_id)
         except Blog.DoesNotExist:
@@ -256,7 +274,7 @@ def create_blog(request: Request) -> Response:
     Returns:
         Response: A response object indicating the status of the operation.
     """
-    if request.method == 'POST':
+    if request.method == 'POST': 
         data       = request.data
         files      = request.FILES
         serializer = BlogSerializer(data=data)
@@ -287,8 +305,11 @@ def update_blog(request: Request) -> Response:
         Response: A response object indicating the status of the operation.
     """
     if request.method == 'PUT':
-        data = request.data
-        user_id = data['user']
+        try:
+            data = request.data
+            user_id = data['user']
+        except KeyError as e:
+            return Response(ApiResponse.key_error(e), status=status.HTTP_400_BAD_REQUEST)
         try:
             blog = Blog.objects.get(pk=data['blog'])
         except Blog.DoesNotExist:
@@ -324,9 +345,12 @@ def delete_blog(request: Request) -> Response:
         Response: A response object indicating the status of the operation.
     """
     if request.method == 'DELETE':
-        data = request.data
-        blog_id = data['blog']
-        user_id = data['user']
+        try:
+            data = request.data
+            blog_id = data['blog']
+            user_id = data['user']
+        except KeyError as e:
+            return Response(ApiResponse.key_error(e), status=status.HTTP_400_BAD_REQUEST)
         try: 
             blog = Blog.objects.get(pk=blog_id)
         except Blog.DoesNotExist:
@@ -353,9 +377,12 @@ def delete_file(request: Request) -> Response:
         Response: A response object indicating the status of the operation.
     """
     if request.method == 'DELETE':
-        data = request.data
-        user_id = data['user']
-        file_id = data['file']
+        try:
+            data = request.data
+            user_id = data['user']
+            file_id = data['file']
+        except KeyError as e:
+            return Response(ApiResponse.key_error(e), status=status.HTTP_400_BAD_REQUEST)
         try: 
             file = File.objects.select_related('blog').get(pk=file_id)
         except Blog.DoesNotExist:
