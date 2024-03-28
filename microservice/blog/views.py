@@ -1,8 +1,7 @@
-from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.renderers import JSONRenderer
 from rest_framework import status
 
 from .models import Blog, File
@@ -14,7 +13,6 @@ from django.db.models import Subquery
 
 
 @api_view(['GET'])
-@renderer_classes([JSONRenderer])
 def magazine_feed(request: Request) -> Response: 
     """
     API view to read blogs of the latest released magazine. Implements a 10 blog pagination 
@@ -44,7 +42,6 @@ def magazine_feed(request: Request) -> Response:
 
 
 @api_view(['GET'])
-@renderer_classes([JSONRenderer])
 def archived_magazine(request: Request) -> Response: 
     """
     API view to read blogs of an archived magazine. Implements a 10 blog pagination and 
@@ -78,7 +75,6 @@ def archived_magazine(request: Request) -> Response:
 
 
 @api_view(['GET'])
-@renderer_classes([JSONRenderer])
 def user_blogs(request: Request) -> Response: 
     """
     API view to read a user's blogs. Implements a 10 blog pagination and fetches 
@@ -112,7 +108,6 @@ def user_blogs(request: Request) -> Response:
 
 
 @api_view(['GET'])
-@renderer_classes([JSONRenderer])
 def user_rejected_blogs(request: Request) -> Response: 
     """
     API view to read the current user's rejected blogs. Implements a 10 
@@ -147,7 +142,6 @@ def user_rejected_blogs(request: Request) -> Response:
 
 
 @api_view(['GET'])
-@renderer_classes([JSONRenderer]) 
 def user_drafts(request: Request) -> Response: 
     """
     API view to read the current user's drafts. Implements a 10 
@@ -180,7 +174,6 @@ def user_drafts(request: Request) -> Response:
             
 
 @api_view(['GET'])
-@renderer_classes([JSONRenderer])
 def read_blog(request: Request) -> Response: 
     """
     API view to read a single blog/draft. If the client tries to read 
@@ -227,7 +220,6 @@ def read_blog(request: Request) -> Response:
 
 
 @api_view(['POST'])
-@renderer_classes([JSONRenderer])
 def new_reader(request: Request) -> Response: 
     """
     API view to add a reader id in a blog. This api takes care of 
@@ -255,6 +247,7 @@ def new_reader(request: Request) -> Response:
                 blog.save()
             else:
                 blog.reader_ids = [str(user_id)]
+                blog.readers += 1
                 blog.save()
             return Response(ApiResponse.READER_POST_SUCCESS, status=status.HTTP_201_CREATED)
         except IntegrityError:
@@ -263,7 +256,6 @@ def new_reader(request: Request) -> Response:
 
 
 @api_view(['POST']) 
-@renderer_classes([JSONRenderer]) 
 def create_blog(request: Request) -> Response: 
     """
     API view to create blogs. The API handles text, images, videos, and stores the files' respective 
@@ -293,7 +285,6 @@ def create_blog(request: Request) -> Response:
 
 
 @api_view(['PUT'])
-@renderer_classes([JSONRenderer])
 def update_blog(request: Request) -> Response: 
     """
     API view to update blogs. This view is very similar to the blog creation as the only aspect where both 
@@ -333,7 +324,6 @@ def update_blog(request: Request) -> Response:
 
 
 @api_view(['DELETE'])
-@renderer_classes([JSONRenderer])
 def delete_blog(request: Request) -> Response:
     """
     API view to delete a blog. Only the authors are able to delete their 
@@ -363,7 +353,6 @@ def delete_blog(request: Request) -> Response:
 
 
 @api_view(['DELETE'])
-@renderer_classes([JSONRenderer])
 def delete_file(request: Request) -> Response:
     """
     API view to delete a file in a blog. This api can be called to delete a specific 
