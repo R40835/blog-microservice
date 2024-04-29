@@ -23,7 +23,6 @@ class User(models.Model):
     type                = models.CharField(max_length=255, null=True, blank=True)
     gender              = models.CharField(max_length=255, null=True, blank=True)
     banned              = models.BooleanField(default=False, null=True, blank=True)
-    passport            = models.CharField(max_length=255, null=True, blank=True)
 
     role                = models.ForeignKey(Role, on_delete=models.CASCADE)
 
@@ -147,3 +146,4 @@ class AppNotification(models.Model):
 
     class Meta:
         db_table = 'app_notification'
+        ordering = ['-timestamp']

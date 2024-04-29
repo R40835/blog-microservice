@@ -374,7 +374,7 @@ def delete_file(request: Request) -> Response:
             return Response(ApiResponse.key_error(e), status=status.HTTP_400_BAD_REQUEST)
         try: 
             file = File.objects.select_related('blog').get(pk=file_id)
-        except Blog.DoesNotExist:
+        except File.DoesNotExist:
             return Response(ApiResponse.NOT_FOUND, status=status.HTTP_404_NOT_FOUND)
         if int(user_id) == int(file.blog.user_id):
             try:
